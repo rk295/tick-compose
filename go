@@ -6,7 +6,7 @@ function runInflux {
            -d \
            -p 8083:8083 \
            -p 8086:8086 \
-           -v ${PWD}/influx-data/:/var/lib/influxdb \
+           -v "${PWD}/influx-data/:/var/lib/influxdb" \
            --name influxdb \
            influxdb
 }
@@ -15,7 +15,7 @@ function runKapacitor {
     docker run \
            -d \
            -p 9092:9092 \
-           -v ${PWD}/kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro \
+           -v "${PWD}/kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro" \
            --link influxdb:influxdb \
            --name kapacitor \
            kapacitor
@@ -38,13 +38,13 @@ function getContainerId {
 }
 
 function stopContainers {
-    killContainer $(getContainerId influxdb)
-    killContainer $(getContainerId kapacitor)
+    killContainer "$(getContainerId influxdb)"
+    killContainer "$(getContainerId kapacitor)"
 
 }
 
 function logs {
-    docker logs -f $(getContainerId $1)
+    docker logs -f "$(getContainerId "$1")"
 }
 
 function status {
@@ -65,7 +65,11 @@ function usage {
     echo "$0 [start|stop|status|logs]."
     echo ""
     echo "logs option takes one of two options: influx or kapacitor"
+    echo ""
+    echo "* Kapacitor is at http://localhost:9092/"
+    echo "* Influx is at http://localhost:8083/ and http://localhost:8086/"
 }
+
 action="$1"
 case "$action" in
     start)
@@ -88,7 +92,7 @@ case "$action" in
             usage
             exit 1
         fi
-        logs $1
+        logs "$1"
         ;;
     *)
         usage
