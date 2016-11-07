@@ -2,11 +2,18 @@
 # set -x
 
 function runInflux {
+
+    dataDir="influx-data"
+
+    if [[ ! -d "$dataDir" ]]; then
+        mkdir $dataDir
+    fi
+
     docker run \
            -d \
            -p 8083:8083 \
            -p 8086:8086 \
-           -v "${PWD}/influx-data/:/var/lib/influxdb" \
+           -v "${PWD}/$dataDir/:/var/lib/influxdb" \
            --name influxdb \
            influxdb
 }
