@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+dataSources=$(curl -s 'http://admin:admin@localhost:3000/api/datasources')
+
+if [[ "$dataSources" = "[]" ]]; then
+    echo "Unconfigured, adding a datasource"
+
+    curl 'http://admin:admin@localhost:3000/api/datasources' \
+         -X POST \
+         -H 'Content-Type: application/json;charset=UTF-8' \
+         --data-binary '{"name":"influx","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":true,"database":"mydb","user":"admin","password":"admin"}'
+
+fi
