@@ -18,6 +18,15 @@ function runInflux {
            influxdb
 }
 
+function runTelegraf {
+    docker run \
+           -d \
+           -v "${PWD}/telegraf.conf:/etc/telegraf/telegraf.conf:ro" \
+           --link influxdb:influxdb \
+           --name telegraf \
+           telegraf
+}
+
 function runKapacitor {
     docker run \
            -d \
@@ -26,6 +35,20 @@ function runKapacitor {
            --link influxdb:influxdb \
            --name kapacitor \
            kapacitor
+}
+
+function runContainer {
+    case "$1" in
+        influxdb)
+            runInflux
+            ;;
+        telegraf)
+            runTelegraf
+            ;;
+        kapacitor)
+            runKapacitor
+            ;;
+    esac
 }
 
 function killContainer {
@@ -45,8 +68,10 @@ function getContainerId {
 }
 
 function stopContainers {
-    killContainer "$(getContainerId influxdb)"
-    killContainer "$(getContainerId kapacitor)"
+
+    for c in kapacitor telegraf influxdb; do
+        killContainer "$(getContainerId $c)"
+    done
 
 }
 
@@ -55,7 +80,7 @@ function logs {
 }
 
 function status {
-    for c in influxdb kapacitor; do
+    for c in influxdb kapacitor telegraf; do
 
         echo -n "Checking status of $c - "
         id=$(getContainerId "$c")
@@ -71,7 +96,7 @@ function status {
 function usage {
     echo "$0 [start|stop|status|logs]."
     echo ""
-    echo "logs option takes one of two options: influx or kapacitor"
+    echo "logs option takes one of two options: influxdb, kapacitor or telegraf"
     echo ""
     echo "* Kapacitor is at http://localhost:9092/"
     echo "* Influx is at http://localhost:8083/ and http://localhost:8086/"
@@ -80,10 +105,10 @@ function usage {
 action="$1"
 case "$action" in
     start)
-        influxdb=$(runInflux)
-        echo "Influx running in container id: $influxdb"
-        kapacitor=$(runKapacitor)
-        echo "Kapacitor running in container id: $kapacitor"
+        for c in influxdb telegraf kapacitor; do
+            containerId="$(runContainer $c)"
+            echo "$c running in container id: $containerId"
+        done
         ;;
     stop)
         stopContainers
