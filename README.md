@@ -18,6 +18,16 @@ Which will run all the services in the foreground, with logs going to your termi
 
 To background them and get your terminal back.
 
+## Grafana Setup
+
+The first time you run it, you need to add a datasource to Grafana. The `grafana-setup` script in this directory will do that for you, simply run:
+
+    ./grafana-setup
+
+Once the services have started.
+
+## Service URLs
+
 The services will be available on the following URL:
 
 * InfluxDB Simple Web UI http://localhost:8083/
