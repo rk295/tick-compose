@@ -30,9 +30,9 @@ Once the services have started.
 
 The services will be available on the following URL:
 
-* InfluxDB Simple Web UI http://localhost:8083/
-* Grafana http://localhost:3000/ (admin/admin login)
-* Kapacitor Rest API http://localhost:9092/
+* InfluxDB Simple Web UI [http://localhost:8083/](http://localhost:8083/)
+* Grafana [http://localhost:3000/](http://localhost:3000/) (admin/admin login)
+* Kapacitor Rest API [http://localhost:9092/](http://localhost:9092/)
 
 ## Documentation
 
